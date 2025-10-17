@@ -1,0 +1,101 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Photo Gallery</title>
+    <!-- Bootstrap CSS -->
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+    <style>
+        body {
+            padding: 20px;
+        }
+        .card-img-top {
+            width: 100%;
+            height: 200px;
+            object-fit: cover;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1 id="gallery-title" class="mb-4 text-center">Photo Gallery</h1>
+        <div class="row" id="image-gallery-row">
+            <!-- Image cards will be inserted here by JavaScript -->
+        </div>
+    </div>
+
+    <!-- Bootstrap JS and Popper.js -->
+    <script src="https://cdn.jsdelivr.net/npm/@popperjs/core@2.11.7/dist/umd/popper.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.min.js"></script>
+
+    <script>
+        document.addEventListener('DOMContentLoaded', function() {
+            const defaultImages = [
+                "https://media.istockphoto.com/id/517188688/photo/mountain-landscape.jpg?s=612x612&w=0&k=20&c=A63koPKaCyIwQWOTFBRWXj_PwCrR4cEoOw2S9Q7yVl8=",
+                "https://images.pexels.com/photos/1054655/pexels-1054655.jpeg?cs=srgb&dl=pexels-hsapir-1054655.jpg&fm=jpg",
+                "https://www.pinterest.com/ideas/food-and-drink/918530398158/" // This URL usually points to a Pinterest page, not a direct image. For the purpose of displaying, we'll use a placeholder or handle it.
+            ];
+
+            // For the Pinterest URL, let's substitute a valid image for direct display.
+            // In a real scenario, you'd need to extract the actual image URL from the Pinterest page.
+            // For this exercise, we'll use a more direct image for the third default if the pinterest one doesn't load
+            const resolvedDefaultImages = [
+                defaultImages[0],
+                defaultImages[1],
+                "https://cdn.pixabay.com/photo/2015/04/23/22/00/tree-736885_1280.jpg" // A common placeholder image
+            ];
+
+            const urlParams = new URLSearchParams(window.location.search);
+            const imagesToDisplay = [];
+
+            // Check for img1, img2, img3 parameters
+            for (let i = 1; i <= 3; i++) {
+                const imgParam = urlParams.get(`img${i}`);
+                if (imgParam) {
+                    imagesToDisplay.push(imgParam);
+                }
+            }
+
+            // If no URL parameters, use default images
+            if (imagesToDisplay.length === 0) {
+                imagesToDisplay.push(...resolvedDefaultImages);
+            }
+
+            const galleryRow = document.getElementById('image-gallery-row');
+
+            imagesToDisplay.forEach((imageUrl, index) => {
+                const colDiv = document.createElement('div');
+                colDiv.className = 'col-md-4 mb-4'; // Bootstrap grid column
+
+                const cardDiv = document.createElement('div');
+                cardDiv.className = 'card';
+                cardDiv.id = `image-${index + 1}`; // Set the ID as required
+
+                const img = document.createElement('img');
+                img.className = 'card-img-top';
+                img.src = imageUrl;
+                img.alt = `Gallery Image ${index + 1}`;
+                img.onerror = function() {
+                    // Fallback for broken images, can set a placeholder or remove the card
+                    this.src = 'https://via.placeholder.com/200x200?text=Image+Not+Found';
+                    this.alt = 'Image Not Found';
+                };
+
+                const cardBody = document.createElement('div');
+                cardBody.className = 'card-body';
+
+                const cardTitle = document.createElement('h5');
+                cardTitle.className = 'card-title';
+                cardTitle.textContent = `Image ${index + 1}`;
+
+                cardBody.appendChild(cardTitle);
+                cardDiv.appendChild(img);
+                cardDiv.appendChild(cardBody);
+                colDiv.appendChild(cardDiv);
+                galleryRow.appendChild(colDiv);
+            });
+        });
+    </script>
+</body>
+</html>
